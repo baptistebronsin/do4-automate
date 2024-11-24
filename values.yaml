@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backApi.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.backApi.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.backApi.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.backApi.name }}
+    spec:
+      containers:
+        - name: {{ .Values.backApi.name }}
+          image: {{ .Values.backApi.image }}
+          ports:
+            - containerPort: {{ .Values.backApi.port }}
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: PORT
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: TZ
+            - name: ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: ENV
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: DATABASE_URL
+            - name: WEBSITE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: WEBSITE_URL
+            - name: EMAIL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: EMAIL_HOST
+            - name: EMAIL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: EMAIL_PORT
+            - name: EMAIL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: EMAIL_USER
+            - name: EMAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: EMAIL_PASSWORD
+            - name: EMAIL_DEFAULT_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: EMAIL_DEFAULT_NAME
+            - name: SUPPORT_EMAIL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: SUPPORT_EMAIL
+            - name: JWT_ACCESS_EXPIRATION
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: JWT_ACCESS_EXPIRATION
+            - name: JWT_ACCESS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: JWT_ACCESS_SECRET
+            - name: JWT_REFRESH_EXPIRATION
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: JWT_REFRESH_EXPIRATION
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: JWT_REFRESH_SECRET
+            - name: JWT_VERIFY_LINK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: JWT_VERIFY_LINK_SECRET
+            - name: S3_ACTIVATION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: S3_ACTIVATION_TOKEN
+            - name: S3_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: S3_KEY
+            - name: S3_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: S3_SECRET
+            - name: S3_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: S3_REGION
+            - name: S3_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: S3_ENDPOINT
+            - name: S3_BUCKET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: S3_BUCKET_NAME
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMaps.name }}
+                  key: REDIS_URL
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: REDIS_PASSWORD
+      imagePullSecrets:
+        - name: gitlab-registry
